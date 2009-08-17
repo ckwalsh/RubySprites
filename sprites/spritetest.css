@@ -1,0 +1,19 @@
+#example1
+{
+  background: url('/imgs/logo.png');
+}
+
+#example2
+{
+  background: url('/imgs/logo.gif');
+}
+
+#example3
+{
+  background: url('/imgs/logo.png') -10px -10px;
+}
+
+#example4
+{
+  background: url('/imgs/logo.gif') -10px -10px;
+}
