@@ -1,3 +1,6 @@
+require 'ruby_sprites/image'
+require 'ruby_sprites/block'
+
 module RubySprites
   class Sprite
 
@@ -12,7 +15,7 @@ module RubySprites
       :compress_image => false,
     }
 
-    attr_reader :filename, :file_root, :mtime, :width, :height
+    attr_reader :filename, :file_root, :image_file, :mtime, :width, :height, :options
 
     def initialize(filename, file_root, options = {})
       @options = @@DEFAULT_OPTIONS.merge(options)
@@ -29,8 +32,8 @@ module RubySprites
       @image_queue = []
       @images = {}
 
-      if File.exists?(@image_file) && File.exists?("#{@image_file}.sprite")
-        read_data
+      if File.exists?(@image_file) && File.exists?(@sprite_file)
+        read_file
         @mtime = File.mtime(@file).to_i
       end
     end
@@ -57,7 +60,7 @@ module RubySprites
     end
 
     def add_image(img_path)
-      @image_queue.push Image.new(img_path, @file_root, 0, 0) if @images[img_path].nil?
+      @image_queue.push RubySprites::Image.new(img_path, self, 0, 0) if @images[img_path].nil?
     end
 
     def add_images(img_paths)
@@ -79,7 +82,7 @@ module RubySprites
       if update
         pack
         write_image
-        write_data
+        write_sprite_file
       end
     end
 
@@ -88,10 +91,10 @@ module RubySprites
         case @options[:graphics_manager]
           when :rmagick
             require 'ruby_sprites/magick_manager'
-            @graphics_manager = RubySprites::MagickManager.new
+            @graphics_manager = RubySprites::MagickManager.new(self)
           when :gd
             require 'ruby_sprites/gd_manager'
-            @graphics_manager = RubySprites::GdManager.new
+            @graphics_manager = RubySprites::GdManager.new(self)
         end
       end
       return @graphics_manager
@@ -100,7 +103,7 @@ module RubySprites
     protected
 
     def write_image
-      graphics_manager.combine(@image_file, @images, @width, @height, @options)
+      graphics_manager.combine(@images)
     end
 
     def write_sprite_file
@@ -112,14 +115,14 @@ module RubySprites
       @images.each do |img_path, img|
         lines.push "I #{img_path} #{img.x} #{img.y} #{img.width} #{img.height}"
       end
-      fp = File.open(sprite_file, 'w')
+      fp = File.open(@sprite_file, 'w')
       fp.write(lines.join("\n"))
       fp.close
     end
 
     def read_file
-      return unless File.exists? sprite_file
-      lines = File.readlines(sprite_file)
+      return unless File.exists? @sprite_file
+      lines = File.readlines(@sprite_file)
       return if lines.empty?
       dims = lines.delete_at(0).chomp.split(' ')
       @width = dims[0].to_i
@@ -150,7 +153,7 @@ module RubySprites
         @blocks.each do |block|
           next unless block.fits?(img)
           if img.width == block.width || img.height == block.height
-            if img_area == block.area
+            if img.area == block.area
               smallest_match = block
               smallest_exact = block
               break
