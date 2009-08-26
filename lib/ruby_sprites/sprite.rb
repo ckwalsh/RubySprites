@@ -34,7 +34,7 @@ module RubySprites
 
       if File.exists?(@image_file) && File.exists?(@sprite_file)
         read_file
-        @mtime = File.mtime(@file).to_i
+        @mtime = File.mtime(@image_file)
       end
     end
 
@@ -92,7 +92,7 @@ module RubySprites
           when :rmagick
             require 'ruby_sprites/magick_manager'
             @graphics_manager = RubySprites::MagickManager.new(self)
-          when :gd
+          when :gd2
             require 'ruby_sprites/gd_manager'
             @graphics_manager = RubySprites::GdManager.new(self)
         end
@@ -132,7 +132,7 @@ module RubySprites
         if line_parts[0] == 'B'
           @blocks.push Block.new(line_parts[1].to_i, line_parts[2].to_i, line_parts[3].to_i, line_parts[4].to_i)
         elsif line_parts[0] == 'I'
-          img = Image.new(line_parts[1], @file_root, line_parts[2].to_i, line_parts[3].to_i, line_parts[4].to_i, line_parts[5].to_i)
+          img = Image.new(line_parts[1], self, line_parts[2].to_i, line_parts[3].to_i, line_parts[4].to_i, line_parts[5].to_i)
           @images[img.path] = img
         end
       end
