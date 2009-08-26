@@ -18,7 +18,7 @@ module RubySprites
       image.export(@sprite.image_file)
     end
 
-    def get_info
+    def get_info(path)
       img = GD2::Image.import(@sprite.file_root + path)
       info = {:width => img.width, :height => img.height}
       img = nil
