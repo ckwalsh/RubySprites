@@ -103,7 +103,7 @@ module RubySprites
     protected
 
     def write_image
-      graphics_manager.combine(@images)
+      graphics_manager.combine(@images, @width, @height)
     end
 
     def write_sprite_file

@@ -7,12 +7,16 @@ module RubySprites
   class GdManager
     include GraphicsManager
 
-    def combine(images)
-      image = GD2::Image.new(@sprite.width, @sprite.height)
+    def combine(images, width, height)
+      image = GD2::Image.new(width, height)
       images.each do |path, img|
         next unless img.exists?
         i = GD2::Image.import(@sprite.file_root + path)
-        image.copy_from(i, img.x, img.y, 0, 0, img.width, img.height)
+        w = width - img.x
+        w = img.width if img.width < w
+        h = height - img.y
+        h = img.height if img.height < h
+        image.copy_from(i, img.x, img.y, 0, 0, w, h)
         i = nil
       end
       image.export(@sprite.image_file)

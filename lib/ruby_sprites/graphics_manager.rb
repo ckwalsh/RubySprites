@@ -4,7 +4,7 @@ module RubySprites
       @sprite = sprite
     end
     
-    def combine(images)
+    def combine(images, width, height)
       raise "Must be overridden"
     end
 
