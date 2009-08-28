@@ -1,22 +1,41 @@
+# Author:: Cullen Walsh
+# Copyright:: Copyright (c) 2009 Cullen Walsh
+# License:: Lesser General Public License v3
+
 require 'ruby_sprites/image'
 require 'ruby_sprites/block'
 
 module RubySprites
+  
+  # This class is main image sprite creator.  It allows for reading existing
+  # sprites, adding images to sprites, and repacking sprites on updates
   class Sprite
+    
+    # A hash of the default options a sprite uses.  These should be
+    # sufficient for most usage.
+    @@DEFAULT_OPTIONS = {
+      :graphics_manager => :rmagick, # The image engine to use, may be :rmagick or :gd
+      :pack_direction => :vertical, # Whether images should be stacked :vertical or :horizontal
+      :force_update => false, # Should the sprite image be forced to update, even if it appears up to date?
+      :compress_image => false, # Should RubySprites attempt to compress the image to a smaller size?
+    }
 
+    # Lets one programatically override the default option values if you are
+    # generating multiple sprites
     def self.set_default(key, value)
       @@DEFAULT_OPTIONS[key.to_sym] = value
     end
 
-    @@DEFAULT_OPTIONS = {
-      :graphics_manager => :rmagick,
-      :pack_direction => :vertical,
-      :force_update => false,
-      :compress_image => false,
-    }
-
     attr_reader :filename, :file_root, :image_file, :mtime, :width, :height, :options
 
+    # Creates a sprite object.  Takes an file_root, absolute or relative, a
+    # sprite filename relative to the file root, and an options hash.
+    #
+    # [Availible Options]
+    #  * :graphics manager - The graphics engine to use, may be :rmagick or :gd
+    #  * :pack direction - The direction sprites should be packed into the image, may be :vertical or :horizontal
+    #  * :force_update - Should the sprite image be forced to update, even if it appears up to date? True/False
+    #  * :compress_image - Should RubySprites attempt to compress the image to a smaller size? True/False
     def initialize(filename, file_root, options = {})
       @options = @@DEFAULT_OPTIONS.merge(options)
 
@@ -38,17 +57,22 @@ module RubySprites
       end
     end
 
+    # Destroys the sprite, deleting its related files and freeing up memory
     def destroy!
       File.unlink @image_file if File.exists?(@image_file)
       File.unlink @sprite_file if File.exists?(@sprite_file)
       initialize(@filename, @file_root, @options)
     end
 
+    # Determines if the image in the relative path exists within the sprite
+    # and has been updated since hte sprite was generated.
     def image_current?
       img = @images[imagepath]
       return !img.nil? && img.exists? && img.mtime < @mtime
     end
 
+    # Returns the x position, y position, width, and height of the image if
+    # it exists in the sprite.
     def image_info(imagepath)
       return nil if @images[imagepath].nil?
       return {:x => @images[imagepath].x,
@@ -59,16 +83,20 @@ module RubySprites
               :path => @images[imagepath].path}
     end
 
+    # Adds the image in the relative path to the sprite.
     def add_image(img_path)
       @image_queue.push RubySprites::Image.new(img_path, self, 0, 0) if @images[img_path].nil?
     end
 
+    # Adds the images in the array of relative paths to the sprite.
     def add_images(img_paths)
       img_paths.each do |path|
         add_image(path)
       end
     end
 
+    # Updates the sprite files if it detects changes to the sprite or the
+    # force option is set.
     def update
       update = @options[:force_update] || !@image_queue.empty? || @mtime.nil?
       if update
@@ -86,6 +114,8 @@ module RubySprites
       end
     end
 
+    # Returns a Graphics manager based on the sprite options that will
+    # be used for this sprite.
     def graphics_manager
       if @graphics_manager.nil?
         case @options[:graphics_manager]
@@ -102,10 +132,12 @@ module RubySprites
 
     protected
 
+    # Writes the sprite image
     def write_image
       graphics_manager.combine(@images, @width, @height)
     end
 
+    # Writes the sprite data file
     def write_sprite_file
       lines = []
       lines.push "#{@width} x #{@height}"
@@ -120,6 +152,7 @@ module RubySprites
       fp.close
     end
 
+    # Reads a sprite file and populates the images for this sprite
     def read_file
       return unless File.exists? @sprite_file
       lines = File.readlines(@sprite_file)
@@ -138,6 +171,7 @@ module RubySprites
       end
     end
 
+    # Positions the images in the sprite
     def pack
       @width = 0
       @height = 0
@@ -172,6 +206,7 @@ module RubySprites
       @image_queue = []
     end
 
+    # Sorts the sprite images by various rules
     def sort_images(images, order)
       case order
         when :vertical then
@@ -194,6 +229,7 @@ module RubySprites
       end
     end
 
+    # Splits a block in multiple parts if needed to accommodate an image
     def split_block(img, block)
       if block.nil?
         if img.width > @width

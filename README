@@ -13,6 +13,12 @@ Gems
 External Libraries
 * pngcrush (if you wish to compress png files to a smaller size)
 
+== Special Thanks
+
+Special thanks to the team at WhitePages.com.  This module was invisioned
+and developed during my internship there, and would not be what it is
+today without their help.
+
 == License
 
 RubySprites Copyright (c) 2009 Cullen Walsh
