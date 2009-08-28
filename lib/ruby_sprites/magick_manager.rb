@@ -5,7 +5,7 @@ require 'RMagick'
 
 module RubySprites
   class MagickManager
-    include RubySprites::GraphicsManager
+    include GraphicsManager
 
     def combine(images, width, height)
       image = Magick::Image.new(width, height)

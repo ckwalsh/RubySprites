@@ -85,7 +85,7 @@ module RubySprites
 
     # Adds the image in the relative path to the sprite.
     def add_image(img_path)
-      @image_queue.push RubySprites::Image.new(img_path, self, 0, 0) if @images[img_path].nil?
+      @image_queue.push Image.new(img_path, self, 0, 0) if @images[img_path].nil?
     end
 
     # Adds the images in the array of relative paths to the sprite.
@@ -121,10 +121,10 @@ module RubySprites
         case @options[:graphics_manager]
           when :rmagick
             require 'ruby_sprites/magick_manager'
-            @graphics_manager = RubySprites::MagickManager.new(self)
+            @graphics_manager = MagickManager.new(self)
           when :gd2
             require 'ruby_sprites/gd_manager'
-            @graphics_manager = RubySprites::GdManager.new(self)
+            @graphics_manager = GdManager.new(self)
         end
       end
       return @graphics_manager
