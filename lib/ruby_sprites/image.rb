@@ -10,20 +10,24 @@ module RubySprites
       @x = x
       @y = y
 
-      @width = width
-      @height = height
+      @width = nil
+      @height = nil
       @mtime = nil
 
       if exists?
         @mtime = File.mtime(@sprite.file_root + @path)
-      end
+        
+        if @mtime < sprite.mtime
+          @width = width
+          @height = height
+        end
 
-      if @width.nil? || @height.nil?
-        info = @sprite.graphics_manager.get_info(path)
-        @width = info[:width]
-        @height = info[:height]
+        if @width.nil? || @height.nil?
+          info = @sprite.graphics_manager.get_info(path)
+          @width = info[:width]
+          @height = info[:height]
+        end
       end
-
     end
 
     def exists?

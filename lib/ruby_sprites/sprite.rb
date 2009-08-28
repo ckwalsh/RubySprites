@@ -57,6 +57,11 @@ module RubySprites
       end
     end
 
+    def set_option(key, val)
+      raise "Not a valid sprite option" unless @options.has_key?(key.to_sym)
+      @options[key.to_sym] = val
+    end
+
     # Destroys the sprite, deleting its related files and freeing up memory
     def destroy!
       File.unlink @image_file if File.exists?(@image_file)
