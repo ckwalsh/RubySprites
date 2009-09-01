@@ -2,7 +2,7 @@ module RubySprites
   class Image
 
     attr_accessor :x, :y
-    attr_reader :path, :mtime, :width, :height
+    attr_reader :path, :width, :height
 
     def initialize(path, sprite, x = 0, y = 0, width = nil, height = nil)
       @path = path
@@ -12,12 +12,10 @@ module RubySprites
 
       @width = nil
       @height = nil
-      @mtime = nil
 
       if exists?
-        @mtime = File.mtime(@sprite.file_root + @path)
         
-        if @mtime < sprite.mtime
+        if !sprite.mtime.nil? && mtime < sprite.mtime
           @width = width
           @height = height
         end
@@ -38,6 +36,11 @@ module RubySprites
       return nil if @width.nil?
       @area = @width * @height if @area.nil?
       return @area
+    end
+
+    def mtime
+      return File.mtime(@sprite.file_root + @path) if exists?
+      return nil
     end
   end
 end

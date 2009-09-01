@@ -26,7 +26,7 @@ module RubySprites
       @@DEFAULT_OPTIONS[key.to_sym] = value
     end
 
-    attr_reader :filename, :file_root, :image_file, :mtime, :width, :height, :options
+    attr_reader :filename, :file_root, :image_file, :mtime, :width, :height, :options, :images
 
     # Creates a sprite object.  Takes an file_root, absolute or relative, a
     # sprite filename relative to the file root, and an options hash.
@@ -71,9 +71,9 @@ module RubySprites
 
     # Determines if the image in the relative path exists within the sprite
     # and has been updated since hte sprite was generated.
-    def image_current?
+    def image_current?(imagepath)
       img = @images[imagepath]
-      return !img.nil? && img.exists? && img.mtime < @mtime
+      return !img.nil? && img.exists? && !@mtime.nil? && img.mtime <= @mtime
     end
 
     # Returns the x position, y position, width, and height of the image if
@@ -106,7 +106,7 @@ module RubySprites
       update = @options[:force_update] || !@image_queue.empty? || @mtime.nil?
       if update
         @images.each do |id, img|
-          if img.mtime.nil? || img.mtime > @mtime
+          if @mtime.nil? || img.mtime.nil? || img.mtime >= @mtime
             update = true
             break
           end
@@ -116,6 +116,7 @@ module RubySprites
         pack
         write_image
         write_sprite_file
+        @mtime = Time.now
       end
     end
 
@@ -241,6 +242,7 @@ module RubySprites
           @blocks.push Block.new(@width, 0, img.width - @width, @height) if @height > 0
           @width = img.width
         end
+
         img.x = 0
         img.y = @height
         @images[img.path] = img

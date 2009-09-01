@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+require 'test/unit'
+
 test_dir = File.dirname(__FILE__)
 
 $:.unshift File.join(test_dir, '../lib')
