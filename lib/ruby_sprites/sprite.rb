@@ -15,9 +15,8 @@ module RubySprites
     # sufficient for most usage.
     @@DEFAULT_OPTIONS = {
       :graphics_manager => :rmagick, # The image engine to use, may be :rmagick or :gd
-      :pack_direction => :vertical, # Whether images should be stacked :vertical or :horizontal
+      :pack_type => :vertical_smart, # Which algorithm should be used to pack images
       :force_update => false, # Should the sprite image be forced to update, even if it appears up to date?
-      :compress_image => false, # Should RubySprites attempt to compress the image to a smaller size?
     }
 
     # Lets one programatically override the default option values if you are
@@ -30,12 +29,6 @@ module RubySprites
 
     # Creates a sprite object.  Takes an file_root, absolute or relative, a
     # sprite filename relative to the file root, and an options hash.
-    #
-    # [Availible Options]
-    #  * :graphics manager - The graphics engine to use, may be :rmagick or :gd
-    #  * :pack direction - The direction sprites should be packed into the image, may be :vertical or :horizontal
-    #  * :force_update - Should the sprite image be forced to update, even if it appears up to date? True/False
-    #  * :compress_image - Should RubySprites attempt to compress the image to a smaller size? True/False
     def initialize(filename, file_root, options = {})
       @options = @@DEFAULT_OPTIONS.merge(options)
 
@@ -58,7 +51,6 @@ module RubySprites
     end
 
     def set_option(key, val)
-      raise "Not a valid sprite option" unless @options.has_key?(key.to_sym)
       @options[key.to_sym] = val
     end
 
@@ -181,58 +173,33 @@ module RubySprites
     def pack
       @width = 0
       @height = 0
+      
       @blocks = []
-      @image_queue.concat @images.values
-      @images = {}
-      sort_images(@image_queue, @options[:pack_direction])
-
+      
       @image_queue.each do |img|
-        next unless img.exists?
-        smallest_match = nil
-        smallest_exact = nil
-        @blocks.each do |block|
-          next unless block.fits?(img)
-          if img.width == block.width || img.height == block.height
-            if img.area == block.area
-              smallest_match = block
-              smallest_exact = block
-              break
-            elsif smallest_exact.nil? || block.area < smallest_exact.area
-              smallest_exact = block
-            end
-          end
-          if smallest_match.nil? || block.area < smallest_match.area
-            smallest_match = block
-          end
-        end
-
-        split_block(img, smallest_exact || smallest_match)
+        @images[img.path] = img
       end
-
       @image_queue = []
-    end
-
-    # Sorts the sprite images by various rules
-    def sort_images(images, order)
-      case order
-        when :vertical then
-          images.sort! {|a, b|
-            if b.width == a.width
-              b.height <=> a.height
-            else
-              b.width <=> a.width
-            end
-          }
-        when :horizontal then
-          images.sort! {|a, b|
-            if b.height == a.height
-              b.width <=> a.width
-            else
-              b.height <=> a.height
-            end
-          }
-        else raise "Invalid sort order"
+      
+      case @options[:pack_type]
+        when :vertical_stack
+          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
+          dims = Packer::VerticalStack.pack(@images.values)
+        when :horizontal_stack
+          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
+          dims = Packer::HorizontalStack.pack(@images.values)
+        when :vertical_smart
+          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
+          dims = Packer::VerticalSmart.pack(@images.values)
+        when :horizontal_smart
+          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
+          dims = Packer::HorizontalSmart.pack(@images.values)
+        else raise "Invalid packing type"
       end
+
+      @width = dims[:width]
+      @height = dims[:height]
+
     end
 
     # Splits a block in multiple parts if needed to accommodate an image

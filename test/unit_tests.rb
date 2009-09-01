@@ -103,5 +103,4 @@ class TestSpriteRMagick < Test::Unit::TestCase
 
   end
 
-  def 
 end
