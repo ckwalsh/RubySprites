@@ -5,7 +5,7 @@ $:.unshift File.join(current_dir, '../../lib')
 require 'ruby_sprites/sprite'
 
 
-pack_types = [:vertical_stack, :horizontal_stack, :vertical_smart, :horizontal_smart]
+pack_types = [:vertical_stack, :horizontal_stack, :vertical_smart, :horizontal_smart, :both_smart, :even, :ratio]
 
 pack_types.each do |pack|
   sprite = RubySprites::Sprite.new("packing/#{pack.to_s}.png", current_dir + '/..', {:pack_type => pack})

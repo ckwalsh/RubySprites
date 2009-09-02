@@ -221,6 +221,15 @@ module RubySprites
         when :horizontal_smart
           require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
           dims = Packer::HorizontalSmart.pack(@images.values)
+        when :both_smart
+          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
+          dims = Packer::BothSmart.pack(@images.values)
+        when :even
+          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
+          dims = Packer::Even.pack(@images.values)
+        when :ratio
+          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
+          dims = Packer::Ratio.pack(@images.values)
         else raise "Invalid packing type"
       end
 
