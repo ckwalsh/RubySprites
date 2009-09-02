@@ -3,10 +3,13 @@
 $test_dir = File.dirname(__FILE__)
 $:.unshift File.join($test_dir, '../lib')
 
+puts "These tests make sure RubySprites is functionally working.  They cannot check if the generated images are correct"
+puts "Correctness is most easily checked via the example scripts."
+
 require 'test/unit'
 require 'ruby_sprites/sprite'
 
-class TestSpriteRMagick < Test::Unit::TestCase
+class TestSprite < Test::Unit::TestCase
   
   def setup
     File.unlink($test_dir + '/test.png') if File.exists?($test_dir + '/test.png')
@@ -103,4 +106,69 @@ class TestSpriteRMagick < Test::Unit::TestCase
 
   end
 
+  def test_rmagick
+    # This is checking just for an error to be thrown
+    # Manual validation should take place to check if the image is correct
+    @sprite.set_option(:graphics_manager, :rmagick)
+    @sprite.update
+
+    @sprite.add_image('imgs/1.png')
+
+    @sprite.update
+    
+    assert_equal(true, File.exists?("#{@sprite.file_root}/test.png"))
+  end
+
+  def test_gd
+    # This is checking just for an error to be thrown
+    # Manual validation should take place to check if the image is correct
+    @sprite.set_option(:graphics_manager, :rmagick)
+    @sprite.update
+
+    @sprite.add_image('imgs/1.png')
+
+    @sprite.update
+
+    assert_equal(true, File.exists?("#{@sprite.file_root}/test.png"))
+  end
+
+  def test_pack_vertical
+    @sprite.set_option(:pack_type, :vertical_stack)
+    
+    (1..20).each do |n|
+      @sprite.add_image("imgs/#{n}.png")
+    end
+    
+    @sprite.update
+  end
+
+  def test_pack_horizontal
+    @sprite.set_option(:pack_type, :horizontal_stack)
+    
+    (1..20).each do |n|
+      @sprite.add_image("imgs/#{n}.png")
+    end
+    
+    @sprite.update
+  end
+
+  def test_pack_vertical_smart
+    @sprite.set_option(:pack_type, :vertical_smart)
+    
+    (1..20).each do |n|
+      @sprite.add_image("imgs/#{n}.png")
+    end
+    
+    @sprite.update
+  end
+  
+  def test_pack_horizontal_smart
+    @sprite.set_option(:pack_type, :horizontal_smart)
+    
+    (1..20).each do |n|
+      @sprite.add_image("imgs/#{n}.png")
+    end
+    
+    @sprite.update
+  end
 end

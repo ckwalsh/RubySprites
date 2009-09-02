@@ -106,7 +106,7 @@ module RubySprites
       end
       if update
         pack
-        write_image
+        write_image unless @height == 0 || @width == 0
         write_sprite_file
         @mtime = Time.now
       end
@@ -123,6 +123,8 @@ module RubySprites
           when :gd2
             require 'ruby_sprites/gd_manager'
             @graphics_manager = GdManager.new(self)
+          else
+            throw "Invalid Image Manager"
         end
       end
       return @graphics_manager

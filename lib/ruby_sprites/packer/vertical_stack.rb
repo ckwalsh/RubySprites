@@ -5,7 +5,7 @@ module RubySprites
   module Packer
     module VerticalStack
 
-      def pack(images, options = {})
+      def self.pack(images, options = {})
         width = 0
         height = 0
         images.each do |img|
