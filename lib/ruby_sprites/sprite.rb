@@ -112,6 +112,31 @@ module RubySprites
       end
     end
 
+    @@managers = nil
+
+    def self.graphics_managers
+      
+      if @@managers.nil?
+        @@managers = []
+      
+        require 'rubygems'
+
+        begin
+          require 'RMagick'
+          @@managers.push :rmagick
+        rescue LoadError
+        end
+  
+        begin
+          require 'GD2'
+          @@managers.push :gd2
+        rescue LoadError
+        end
+      end
+
+      return @@managers
+    end
+
     # Returns a Graphics manager based on the sprite options that will
     # be used for this sprite.
     def graphics_manager

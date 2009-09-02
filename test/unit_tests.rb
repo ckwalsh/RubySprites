@@ -10,7 +10,28 @@ require 'test/unit'
 require 'ruby_sprites/sprite'
 
 class TestSprite < Test::Unit::TestCase
-  
+ 
+  def initialize(test_suite)
+    super test_suite
+    
+    @image_managers = []
+
+    require 'rubygems'
+
+    begin
+      require 'RMagick'
+      @image_managers.push :rmagick
+    rescue LoadError
+    end
+
+    begin
+      require 'GD2'
+      @image_managers.push :gd2
+    rescue LoadError
+    end
+
+  end
+
   def setup
     File.unlink($test_dir + '/test.png') if File.exists?($test_dir + '/test.png')
     File.unlink($test_dir + '/test.png.sprite') if File.exists?($test_dir + '/test.png.sprite')
@@ -107,6 +128,10 @@ class TestSprite < Test::Unit::TestCase
   end
 
   def test_rmagick
+    unless @image_managers.include?(:rmagick)
+      puts "RMagick Not installed, skipping test"
+      return
+    end
     # This is checking just for an error to be thrown
     # Manual validation should take place to check if the image is correct
     @sprite.set_option(:graphics_manager, :rmagick)
@@ -120,6 +145,10 @@ class TestSprite < Test::Unit::TestCase
   end
 
   def test_gd
+    unless @image_managers.include?(:gd2)
+      puts  "GD2 Not installed, skipping test"
+      return
+    end
     # This is checking just for an error to be thrown
     # Manual validation should take place to check if the image is correct
     @sprite.set_option(:graphics_manager, :rmagick)
