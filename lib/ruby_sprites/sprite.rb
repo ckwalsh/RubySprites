@@ -224,6 +224,15 @@ module RubySprites
         when :both_smart
           require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
           dims = Packer::BothSmart.pack(@images.values)
+        when :vertical_split
+          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
+          dims = Packer::VerticalSplit.pack(@images.values)
+        when :horizontal_split
+          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
+          dims = Packer::HorizontalSplit.pack(@images.values)
+        when :both_split
+          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
+          dims = Packer::BothSplit.pack(@images.values)
         when :even
           require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
           dims = Packer::Even.pack(@images.values)

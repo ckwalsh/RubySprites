@@ -27,7 +27,8 @@ module RubySprites
     end
 
     def area
-      return @width * @height
+      @area = @width * @height if @area.nil?
+      return @area
     end
   end
 end
