@@ -1,0 +1,38 @@
+= RubySprites
+
+Provides a library for generating image sprites from multiple images, as
+well as a few basic tools to manage sprites and act as example
+implementations.
+
+== Dependencies
+
+Gems
+* RMagick 2.x.x OR
+* GD2
+
+External Libraries
+* pngcrush (if you wish to compress png files to a smaller size)
+
+== Special Thanks
+
+Special thanks to the team at WhitePages.com.  This module was invisioned
+and developed during my internship there, and would not be what it is
+today without their help.
+
+== License
+
+RubySprites Copyright (c) 2009 Cullen Walsh
+GNU Lesser General Public License
+
+RubySprites is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+RubySprites is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with RubySprites.  If not, see <http://www.gnu.org/licenses/>.
