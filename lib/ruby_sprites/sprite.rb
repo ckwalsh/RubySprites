@@ -122,7 +122,7 @@ module RubySprites
         dir = File.dirname(__FILE__)
 
         Dir.foreach("#{dir}/graphics_manager") do |file|
-          next if file[0, 1] == '.'
+          next unless file.match(/\.rb$/)
           begin
             require("#{dir}/graphics_manager/#{file}")
             class_name = file.gsub('.rb', '').capitalize.gsub(/_([a-z]+)/) {|x| $1.capitalize}
@@ -133,7 +133,7 @@ module RubySprites
         end
       end
 
-      return @@managers.values
+      return @@managers
     end
 
     # Returns a Graphics manager based on the sprite options that will
@@ -142,7 +142,7 @@ module RubySprites
       if @graphics_manager.nil?
         Sprite.graphics_managers
         if @options[:graphics_manager].nil?
-          @graphics_manager = Sprite.graphics_managers[0].new(self)
+          @graphics_manager = @@managers.values[0].new(self)
         elsif @@managers[@options[:graphics_manager].to_sym].nil?
           throw "Invalid Image Manager"
         else

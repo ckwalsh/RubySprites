@@ -1,7 +1,10 @@
+require 'ruby_sprites/graphics_manager/graphics_manager'
+
 module RubySprites
   module GraphicsManager
-    class Rmagick
-      include GraphicsManager
+    class Rmagick < GraphicsManager
+
+      DESCRIPTION = 'RMagick'
 
       def self.availible?
         begin

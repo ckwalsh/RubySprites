@@ -1,12 +1,10 @@
-require 'ruby_sprites/graphics_manager'
-
-require 'rubygems'
-require 'gd2'
+require 'ruby_sprites/graphics_manager/graphics_manager'
 
 module RubySprites
   module GraphicsManager
-    class Gd2
-      include GraphicsManager
+    class Gd2 < GraphicsManager
+
+      DESCRIPTION = 'GD2'
 
       def self.availible?
         begin

@@ -10,9 +10,9 @@ require 'benchmark'
 n = 10
 
 puts "#{n} Iterations"
-puts RubySprites::Sprite.graphics_managers.join(', ')
+
 Benchmark.bmbm(10) do |r|
-  if RubySprites::Sprite.graphics_managers.include?(:rmagick)
+  if RubySprites::Sprite.graphics_managers.keys.include?(:rmagick)
     r.report("RMagick:") {
       for i in 1..n;
         sprite = RubySprites::Sprite.new('sprite.png', test_dir, {:graphics_manager => :rmagick, :force_update => true})
@@ -23,7 +23,7 @@ Benchmark.bmbm(10) do |r|
       end
     }
   end
-  if RubySprites::Sprite.graphics_managers.include?(:gd2)
+  if RubySprites::Sprite.graphics_managers.keys.include?(:gd2)
     r.report("GD2:") {
       for i in 1..n;
         sprite = RubySprites::Sprite.new('sprite.png', test_dir, {:graphics_manager => :gd2, :force_update => true})
