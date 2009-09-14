@@ -8,7 +8,7 @@ module RubySprites
       def self.pack(images, options = {})
         width = 0
         height = 0
-        
+       
         images = images.dup
 
         images.sort! do |a, b|

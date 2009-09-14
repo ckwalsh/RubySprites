@@ -15,7 +15,7 @@ module RubySprites
     # sufficient for most usage.
     @@DEFAULT_OPTIONS = {
       :graphics_manager => :rmagick, # The image engine to use, may be :rmagick or :gd
-      :pack_type => :vertical_smart, # Which algorithm should be used to pack images
+      :pack_type => 'vertical_split', # Which algorithm should be used to pack images
       :force_update => false, # Should the sprite image be forced to update, even if it appears up to date?
     }
 
@@ -201,45 +201,22 @@ module RubySprites
       @width = 0
       @height = 0
       
-      @blocks = []
-      
       @image_queue.each do |img|
         @images[img.path] = img
       end
       @image_queue = []
       
-      case @options[:pack_type]
-        when :vertical_stack
-          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
-          dims = Packer::VerticalStack.pack(@images.values)
-        when :horizontal_stack
-          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
-          dims = Packer::HorizontalStack.pack(@images.values)
-        when :vertical_smart
-          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
-          dims = Packer::VerticalSmart.pack(@images.values)
-        when :horizontal_smart
-          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
-          dims = Packer::HorizontalSmart.pack(@images.values)
-        when :both_smart
-          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
-          dims = Packer::BothSmart.pack(@images.values)
-        when :vertical_split
-          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
-          dims = Packer::VerticalSplit.pack(@images.values)
-        when :horizontal_split
-          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
-          dims = Packer::HorizontalSplit.pack(@images.values)
-        when :both_split
-          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
-          dims = Packer::BothSplit.pack(@images.values)
-        when :even
-          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
-          dims = Packer::Even.pack(@images.values)
-        when :ratio
-          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
-          dims = Packer::Ratio.pack(@images.values)
-        else raise "Invalid packing type"
+      return if @images.empty?
+      
+      class_name = @options[:pack_type].to_s.capitalize.gsub(/_([a-z]+)/) {|x| $1.capitalize}
+
+      begin
+        dims = Packer.const_get(class_name.to_sym).pack(@images.values)
+      rescue NameError
+        require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
+        dims = Packer.const_get(class_name.to_sym).pack(@images.values)
+      rescue LoadError
+        throw Exception.new('pack_type is invalid')
       end
 
       @width = dims[:width]
