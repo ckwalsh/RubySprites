@@ -117,39 +117,31 @@ module RubySprites
     def self.graphics_managers
       
       if @@managers.nil?
-        @@managers = []
-      
-        require 'rubygems'
-
-        begin
-          require 'RMagick'
-          @@managers.push :rmagick
-        rescue LoadError
-        end
-  
-        begin
-          require 'GD2'
-          @@managers.push :gd2
-        rescue LoadError
+        @@managers = {}
+        
+        Dir.foreach('graphics_manager') do |file|
+          next if file[0, 1] == '.'
+          begin
+            require('graphics_manager/' + file)
+            class_name = file.gsub('.rb', '').capitalize.gsub(/_([a-z]+)/) {|x| $1.capitalize}
+            @@managers[file.gsub('.rb', '').to_sym] = GraphicsManager.const_get(class_name) if GraphicsManager.const_get(class_name).availible?
+          rescue Exception => a
+          end
         end
       end
 
-      return @@managers
+      return @@managers.values
     end
 
     # Returns a Graphics manager based on the sprite options that will
     # be used for this sprite.
     def graphics_manager
       if @graphics_manager.nil?
-        case @options[:graphics_manager]
-          when :rmagick
-            require 'ruby_sprites/magick_manager'
-            @graphics_manager = MagickManager.new(self)
-          when :gd2
-            require 'ruby_sprites/gd_manager'
-            @graphics_manager = GdManager.new(self)
-          else
-            throw "Invalid Image Manager"
+        Sprite.graphics_managers
+        if @@managers[@options[:graphics_manager].to_sym].nil?
+          throw "Invalid Image Manager"
+        else
+          @graphics_manager = @@managers[@options[:graphics_manager].to_sym].new(self)
         end
       end
       return @graphics_manager

@@ -105,25 +105,23 @@ class TestSprite < Test::Unit::TestCase
     @sprite.add_image('imgs/1.png')
 
     orig_ctime = File.ctime($test_dir + '/imgs/1.png').to_i
-    File.utime(orig_ctime, Time.now.to_i - 1000, 'imgs/1.png')
+    File.utime(orig_ctime, Time.now.to_i - 1000, $test_dir + '/imgs/1.png')
     
-    assert_equal(false, @sprite.image_current?('imgs/1.png'))
-    
-    @sprite.update
-    assert_equal(true, @sprite.image_current?('imgs/1.png'))
-
-    File.utime(orig_ctime, Time.now.to_i + 1000, 'imgs/1.png')
-
-    assert_equal(false, @sprite.image_current?('imgs/1.png'))
+    assert_equal(false, @sprite.image_current?($test_dir + '/imgs/1.png'))
     
     @sprite.update
+    assert_equal(true, @sprite.image_current?($test_dir + '/imgs/1.png'))
 
-    File.utime(orig_ctime, Time.now.to_i, 'imgs/1.png')
+    File.utime(orig_ctime, Time.now.to_i + 1000, $test_dir + '/imgs/1.png')
+
+    assert_equal(false, @sprite.image_current?($test_dir + '/imgs/1.png'))
+    
+    @sprite.update
+
+    File.utime(orig_ctime, Time.now.to_i, $test_dir + '/imgs/1.png')
     
 
-    assert_equal(true, @sprite.image_current?('imgs/1.png'))
-
-    File.utime(orig_ctime, Time.now)
+    assert_equal(true, @sprite.image_current?($test_dir + '/imgs/1.png'))
 
   end
 
