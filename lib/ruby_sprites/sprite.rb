@@ -119,13 +119,16 @@ module RubySprites
       if @@managers.nil?
         @@managers = {}
         
-        Dir.foreach('graphics_manager') do |file|
+        dir = File.dirname(__FILE__)
+
+        Dir.foreach("#{dir}/graphics_manager") do |file|
           next if file[0, 1] == '.'
           begin
-            require('graphics_manager/' + file)
+            require("#{dir}/graphics_manager/#{file}")
             class_name = file.gsub('.rb', '').capitalize.gsub(/_([a-z]+)/) {|x| $1.capitalize}
             @@managers[file.gsub('.rb', '').to_sym] = GraphicsManager.const_get(class_name) if GraphicsManager.const_get(class_name).availible?
           rescue Exception => a
+            puts a
           end
         end
       end
