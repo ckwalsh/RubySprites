@@ -14,7 +14,7 @@ module RubySprites
     # A hash of the default options a sprite uses.  These should be
     # sufficient for most usage.
     @@DEFAULT_OPTIONS = {
-      :graphics_manager => :rmagick, # The image engine to use, may be :rmagick or :gd
+      :graphics_manager => nil, # The image engine to use, may be :rmagick or :gd2
       :pack_type => 'vertical_split', # Which algorithm should be used to pack images
       :force_update => false, # Should the sprite image be forced to update, even if it appears up to date?
     }
@@ -141,7 +141,9 @@ module RubySprites
     def graphics_manager
       if @graphics_manager.nil?
         Sprite.graphics_managers
-        if @@managers[@options[:graphics_manager].to_sym].nil?
+        if @options[:graphics_manager].nil?
+          @graphics_manager = Sprite.graphics_managers[0].new(self)
+        elsif @@managers[@options[:graphics_manager].to_sym].nil?
           throw "Invalid Image Manager"
         else
           @graphics_manager = @@managers[@options[:graphics_manager].to_sym].new(self)

@@ -13,24 +13,7 @@ class TestSprite < Test::Unit::TestCase
  
   def initialize(test_suite)
     super test_suite
-    
-    @image_managers = []
-
-    require 'rubygems'
-
-    begin
-      require 'RMagick'
-      @image_managers.push :rmagick
-    rescue LoadError
-    end
-
-    begin
-      require 'GD2'
-      @image_managers.push :gd2
-    rescue LoadError
-    end
-
-  end
+  end   
 
   def setup
     File.unlink($test_dir + '/test.png') if File.exists?($test_dir + '/test.png')
@@ -41,7 +24,7 @@ class TestSprite < Test::Unit::TestCase
 
   def teardown
     File.unlink($test_dir + 'test.png') if File.exists?($test_dir + 'test.png')
-    File.unline($test_dir + 'test.png.sprite') if File.exists?($test_dir + 'test.png.sprite')
+    File.unlink($test_dir + 'test.png.sprite') if File.exists?($test_dir + 'test.png.sprite')
     @sprite.destroy!
   end
 
@@ -98,7 +81,7 @@ class TestSprite < Test::Unit::TestCase
     assert_equal(11, info[:width])
     assert_equal(51, info[:height])
     assert_equal('imgs/1.png', info[:path])
-    assert_equal(File.mtime('imgs/1.png'), info[:mtime])
+    assert_equal(File.mtime($test_dir + '/imgs/1.png'), info[:mtime])
   end
 
   def test_image_current?
@@ -107,26 +90,29 @@ class TestSprite < Test::Unit::TestCase
     orig_ctime = File.ctime($test_dir + '/imgs/1.png').to_i
     File.utime(orig_ctime, Time.now.to_i - 1000, $test_dir + '/imgs/1.png')
     
-    assert_equal(false, @sprite.image_current?($test_dir + '/imgs/1.png'))
+    assert_equal(false, @sprite.image_current?('imgs/1.png'))
     
     @sprite.update
-    assert_equal(true, @sprite.image_current?($test_dir + '/imgs/1.png'))
+    assert_equal(true, @sprite.image_current?('imgs/1.png'))
 
     File.utime(orig_ctime, Time.now.to_i + 1000, $test_dir + '/imgs/1.png')
 
-    assert_equal(false, @sprite.image_current?($test_dir + '/imgs/1.png'))
+    assert_equal(false, @sprite.image_current?('imgs/1.png'))
     
     @sprite.update
 
     File.utime(orig_ctime, Time.now.to_i, $test_dir + '/imgs/1.png')
     
 
-    assert_equal(true, @sprite.image_current?($test_dir + '/imgs/1.png'))
+    assert_equal(true, @sprite.image_current?('imgs/1.png'))
 
   end
 
   def test_rmagick
-    unless @image_managers.include?(:rmagick)
+    begin
+      require 'rubygems'
+      require 'RMagick'
+    rescue LoadError
       puts "RMagick Not installed, skipping test"
       return
     end
@@ -143,7 +129,10 @@ class TestSprite < Test::Unit::TestCase
   end
 
   def test_gd
-    unless @image_managers.include?(:gd2)
+    begin
+      require 'rubygems'
+      require 'gd2'
+    rescue LoadError
       puts  "GD2 Not installed, skipping test"
       return
     end
@@ -191,6 +180,26 @@ class TestSprite < Test::Unit::TestCase
   
   def test_pack_horizontal_smart
     @sprite.set_option(:pack_type, :horizontal_smart)
+    
+    (1..20).each do |n|
+      @sprite.add_image("imgs/#{n}.png")
+    end
+    
+    @sprite.update
+  end
+
+  def test_pack_vertical_split
+    @sprite.set_option(:pack_type, :vertical_split)
+    
+    (1..20).each do |n|
+      @sprite.add_image("imgs/#{n}.png")
+    end
+    
+    @sprite.update
+  end
+  
+  def test_pack_horizontal_split
+    @sprite.set_option(:pack_type, :horizontal_split)
     
     (1..20).each do |n|
       @sprite.add_image("imgs/#{n}.png")
