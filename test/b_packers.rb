@@ -7,12 +7,12 @@ $:.unshift File.join(test_dir, '../lib')
 require 'ruby_sprites/sprite'
 require 'benchmark'
 
-n = 10
+n = 50
 puts "#{n} Iterations"
 
 file_data = []
 
-Benchmark.bmbm(10) do |r|
+Benchmark.bmbm(17) do |r|
   Dir.entries(File.join(test_dir, '../lib/ruby_sprites/packer')).sort.each do |f|
     next unless f.match(/\.rb$/)
     
@@ -34,7 +34,6 @@ Benchmark.bmbm(10) do |r|
     r.report(class_name) {
       n.times {
         sprite = RubySprites::Sprite.new("#{class_name}.png", test_dir, {:force_update => true, :write_files => false, :pack_type => file_name})
-      
         (1..60).each do |x|
           sprite.add_image("imgs/#{x}.png")
         end
@@ -46,7 +45,7 @@ Benchmark.bmbm(10) do |r|
 end
 
 puts ""
-puts "Fize size Results"
+puts "File size Results"
 
 file_data.each do |data|
   printf("%17s %8d x %5d   (%d bytes)\n", data[0], data[1], data[2], data[3])
