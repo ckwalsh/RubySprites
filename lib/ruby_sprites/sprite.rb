@@ -46,8 +46,8 @@ module RubySprites
       @images = {}
 
       if File.exists?(@image_file) && File.exists?(@sprite_file)
-        read_file
         @mtime = File.mtime(@image_file)
+        read_file
       end
     end
 
