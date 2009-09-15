@@ -1,8 +1,8 @@
 require 'rubygems'
 require 'rake/gempackagetask'
 
-desc 'Run tests'
-task :default => :test
+desc 'Run tests and benchmarks'
+task :default => [:test, :benchmark]
 
 desc 'Determine server compatibility and test components'
 task :test do
@@ -21,14 +21,25 @@ task :test do
     puts "\t#{class_name}"
   }
 
+  puts ""
+
+  require 'test/unit/ui/console/testrunner'
+
+  puts "== Testing RMagick ==" 
   require 'test/t_rmagick'
+  Test::Unit::UI::Console::TestRunner.run(TestRMagick)
+  puts "== Testing GD2 =="
   require 'test/t_gd2'
+  Test::Unit::UI::Console::TestRunner.run(TestGD2)
+  puts ""
 
 end
 
 desc 'Benchmark availible graphics backends and packing algorithms'
 task :benchmark do
+  puts "== Benchmarking Graphics Engines =="
   require 'test/b_graphics'
+  puts "== Benchmarking Packing algorithms =="
   require 'test/b_packers'
 end
 
