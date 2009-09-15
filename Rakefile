@@ -21,8 +21,15 @@ task :test do
     puts "\t#{class_name}"
   }
 
-  require 'test/unit_tests'
+  require 'test/t_rmagick'
+  require 'test/t_gd2'
 
+end
+
+desc 'Benchmark availible graphics backends and packing algorithms'
+task :benchmark do
+  require 'test/b_graphics'
+  require 'test/b_packers'
 end
 
 spec = Gem::Specification.new do |s|

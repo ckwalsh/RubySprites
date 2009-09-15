@@ -8,25 +8,13 @@ require 'ruby_sprites/sprite'
 require 'benchmark'
 
 n = 10
-
 puts "#{n} Iterations"
 
 Benchmark.bmbm(10) do |r|
-  if RubySprites::Sprite.graphics_managers.keys.include?(:rmagick)
-    r.report("RMagick:") {
-      for i in 1..n;
-        sprite = RubySprites::Sprite.new('sprite.png', test_dir, {:graphics_manager => :rmagick, :force_update => true})
-        (1..60).each do |x|
-          sprite.add_image("imgs/#{x}.png")
-        end
-        sprite.update
-      end
-    }
-  end
-  if RubySprites::Sprite.graphics_managers.keys.include?(:gd2)
-    r.report("GD2:") {
-      for i in 1..n;
-        sprite = RubySprites::Sprite.new('sprite.png', test_dir, {:graphics_manager => :gd2, :force_update => true})
+  RubySprites::Sprite.graphics_managers.each do |key, val|
+    r.report("#{val.const_get(:DESCRIPTION)}:") {
+      for i in 1..n
+        sprite = RubySprites::Sprite.new('sprite.png', test_dir, {:graphics_manager => key, :force_update => true})
         (1..60).each do |x|
           sprite.add_image("imgs/#{x}.png")
         end

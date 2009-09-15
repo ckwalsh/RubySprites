@@ -17,6 +17,7 @@ module RubySprites
       :graphics_manager => nil, # The image engine to use, may be :rmagick or :gd2
       :pack_type => 'vertical_split', # Which algorithm should be used to pack images
       :force_update => false, # Should the sprite image be forced to update, even if it appears up to date?
+      :write_files => true,
     }
 
     # Lets one programatically override the default option values if you are
@@ -106,8 +107,10 @@ module RubySprites
       end
       if update
         pack
-        write_image unless @height == 0 || @width == 0
-        write_sprite_file
+        if @options[:write_files]
+          write_image unless @height == 0 || @width == 0
+          write_sprite_file
+        end
         @mtime = Time.now
       end
     end

@@ -6,10 +6,10 @@ $:.unshift File.join($test_dir, '../lib')
 require 'test/unit'
 require 'ruby_sprites/sprite'
 
-unless RubySprites::Sprite.graphics_managers[:rmagick].nil?
-puts "Testing RMagick"
+unless RubySprites::Sprite.graphics_managers[:gd2].nil?
+puts "Testing GD2"
 
-class TestRMagick < Test::Unit::TestCase
+class TestGD2 < Test::Unit::TestCase
  
   def initialize(test_suite)
     super test_suite
@@ -19,7 +19,7 @@ class TestRMagick < Test::Unit::TestCase
     File.unlink($test_dir + '/test.png') if File.exists?($test_dir + '/test.png')
     File.unlink($test_dir + '/test.png.sprite') if File.exists?($test_dir + '/test.png.sprite')
 
-    @sprite = RubySprites::Sprite.new('test.png', $test_dir, {:graphics_manager => :rmagick})
+    @sprite = RubySprites::Sprite.new('test.png', $test_dir, {:graphics_manager => :gd2})
   end
 
   def teardown
