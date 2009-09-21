@@ -4,6 +4,7 @@ $test_dir = File.dirname(__FILE__)
 $:.unshift File.join($test_dir, '../lib')
 
 require 'test/unit'
+require 'test/unit/ui/console/testrunner'
 require 'ruby_sprites/sprite'
 
 unless RubySprites::Sprite.graphics_managers[:gd2].nil?
@@ -168,5 +169,5 @@ class TestGD2 < Test::Unit::TestCase
     @sprite.update
   end
 end
-
+Test::Unit::UI::Console::TestRunner.run(TestGD2)
 end

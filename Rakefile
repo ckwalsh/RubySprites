@@ -23,14 +23,8 @@ task :test do
 
   puts ""
 
-  require 'test/unit/ui/console/testrunner'
-
-  puts "== Testing RMagick ==" 
   require 'test/t_rmagick'
-  Test::Unit::UI::Console::TestRunner.run(TestRMagick)
-  puts "== Testing GD2 =="
   require 'test/t_gd2'
-  Test::Unit::UI::Console::TestRunner.run(TestGD2)
   puts ""
 
 end
