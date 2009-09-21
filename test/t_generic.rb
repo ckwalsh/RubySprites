@@ -156,4 +156,28 @@ module TestGeneric
     
     @sprite.update
   end
+
+  def test_vertical_repeat
+    @sprite.set_option(:repeat, :vertical)
+  
+    (1..20).each do |n|
+      @sprite.add_image("imgs/#{n}.png")
+    end
+
+    @sprite.update
+
+    assert_equal(1, @sprite.height)
+  end
+  
+  def test_horizontal_repeat
+    @sprite.set_option(:repeat, :horizontal)
+  
+    (1..20).each do |n|
+      @sprite.add_image("imgs/#{n}.png")
+    end
+
+    @sprite.update
+
+    assert_equal(1, @sprite.width)
+  end
 end

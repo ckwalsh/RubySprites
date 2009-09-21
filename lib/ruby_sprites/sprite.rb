@@ -160,14 +160,7 @@ module RubySprites
 
     # Writes the sprite image
     def write_image
-      case @options[:repeat]
-        when :vertical
-           graphics_manager.combine(@images, @width, 1)
-        when :horizontal
-           graphics_manager.combine(@images, 1, @height)
-        else
-           graphics_manager.combine(@images, @width, @height)
-      end
+      graphics_manager.combine(@images, @width, @height)
     end
 
     # Writes the sprite data file
@@ -231,9 +224,11 @@ module RubySprites
         if @options[:repeat] == :vertical
           require "ruby_sprites/packer/horizontal_stack"
           dims = Packer::HorizontalStack.pack(@images.values)
-        elsif @options[:repeat] == :vertical
+	  dims[:height] = 1
+        elsif @options[:repeat] == :horizontal
           require "ruby_sprites/packer/vertical_stack"
           dims = Packer::VerticalStack.pack(@images.values)
+	  dims[:width] = 1
         else
           throw Exception.new('Invalid repeat type')
         end
