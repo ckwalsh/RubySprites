@@ -17,7 +17,8 @@ module RubySprites
       :graphics_manager => nil, # The image engine to use, may be :rmagick or :gd2
       :pack_type => 'vertical_split', # Which algorithm should be used to pack images
       :force_update => false, # Should the sprite image be forced to update, even if it appears up to date?
-      :write_files => true,
+      :write_files => true, # Decides whether the script should actually write the sprite and image files, used mainly for testing.
+      :repeat => false # Whether the sprite repeats horizontally or vertically
     }
 
     # Lets one programatically override the default option values if you are
@@ -159,13 +160,21 @@ module RubySprites
 
     # Writes the sprite image
     def write_image
-      graphics_manager.combine(@images, @width, @height)
+      case @options[:repeat]
+        when :vertical
+           graphics_manager.combine(@images, @width, 1)
+        when :horizontal
+           graphics_manager.combine(@images, 1, @height)
+        else
+           graphics_manager.combine(@images, @width, @height)
+      end
     end
 
     # Writes the sprite data file
     def write_sprite_file
       lines = []
       lines.push "#{@width} x #{@height}"
+      lines.push "Repeat #{@options[:repeat]}" if @options[:repeat]
       @blocks.each do |block|
         lines.push "B #{block.x} #{block.y} #{block.width} #{block.height}"
       end
@@ -185,6 +194,14 @@ module RubySprites
       dims = lines.delete_at(0).chomp.split(' ')
       @width = dims[0].to_i
       @height = dims[2].to_i
+
+      # This is to handle repeating sprites
+      repeat = false
+      repeat = lines.delete_at(0).match(/Repeat (\w+)/)[1].to_sym if lines[0] =~ /Repeat \w+/
+      # We want to make sure the repeating type matches
+      return unless repeat == @options[:repeat]
+      @options[:repeat] = repeat
+
       lines.each do |line|
         line_parts = line.chomp.split(' ')
         if line_parts[0] == 'B'
@@ -210,13 +227,25 @@ module RubySprites
       
       class_name = @options[:pack_type].to_s.capitalize.gsub(/_([a-z]+)/) {|x| $1.capitalize}
 
-      begin
-        dims = Packer.const_get(class_name.to_sym).pack(@images.values)
-      rescue NameError
-        require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
-        dims = Packer.const_get(class_name.to_sym).pack(@images.values)
-      rescue LoadError
-        throw Exception.new('pack_type is invalid')
+      if @options[:repeat]
+        if @options[:repeat] == :vertical
+          require "ruby_sprites/packer/horizontal_stack"
+          dims = Packer::HorizontalStack.pack(@images.values)
+        elsif @options[:repeat] == :vertical
+          require "ruby_sprites/packer/vertical_stack"
+          dims = Packer::VerticalStack.pack(@images.values)
+        else
+          throw Exception.new('Invalid repeat type')
+        end
+      else
+        begin
+          dims = Packer.const_get(class_name.to_sym).pack(@images.values)
+        rescue NameError
+          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
+          dims = Packer.const_get(class_name.to_sym).pack(@images.values)
+        rescue LoadError
+          throw Exception.new('pack_type is invalid')
+        end
       end
 
       @width = dims[:width]

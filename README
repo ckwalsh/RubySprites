@@ -10,9 +10,6 @@ Gems
 * RMagick 2.x.x OR
 * GD2
 
-External Libraries
-* pngcrush (if you wish to compress png files to a smaller size)
-
 == Special Thanks
 
 Special thanks to the team at WhitePages.com.  This module was invisioned
