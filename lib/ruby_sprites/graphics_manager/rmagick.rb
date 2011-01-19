@@ -18,7 +18,7 @@ module RubySprites
       end
 
       def combine(images, width, height)
-        image = Magick::Image.new(width, height)
+        image = Magick::Image.new(width, height) { self.background_color = '#0000' }
         images.each do |path, img|
           next unless img.exists?
           i = Magick::Image.read(@sprite.file_root + path).first
