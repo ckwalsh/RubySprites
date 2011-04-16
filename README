@@ -1,3 +1,6 @@
+Originally forked from https://github.com/ckwalsh/RubySprites
+
+
 = RubySprites
 
 Provides a library for generating image sprites from multiple images, as
