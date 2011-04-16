@@ -2,8 +2,8 @@
 # Copyright:: Copyright (c) 2009 Cullen Walsh
 # License:: Lesser General Public License v3
 
-require 'ruby_sprites/image'
-require 'ruby_sprites/block'
+require 'lash-sprites/image'
+require 'lash-sprites/block'
 
 module RubySprites
   
@@ -222,11 +222,11 @@ module RubySprites
 
       if @options[:repeat]
         if @options[:repeat] == :vertical
-          require "ruby_sprites/packer/horizontal_stack"
+          require "lash-sprites/packer/horizontal_stack"
           dims = Packer::HorizontalStack.pack(@images.values)
 	  dims[:height] = 1
         elsif @options[:repeat] == :horizontal
-          require "ruby_sprites/packer/vertical_stack"
+          require "lash-sprites/packer/vertical_stack"
           dims = Packer::VerticalStack.pack(@images.values)
 	  dims[:width] = 1
         else
@@ -236,7 +236,7 @@ module RubySprites
         begin
           dims = Packer.const_get(class_name.to_sym).pack(@images.values)
         rescue NameError
-          require "ruby_sprites/packer/#{@options[:pack_type].to_s}"
+          require "lash-sprites/packer/#{@options[:pack_type].to_s}"
           dims = Packer.const_get(class_name.to_sym).pack(@images.values)
         rescue LoadError
           throw Exception.new('pack_type is invalid')

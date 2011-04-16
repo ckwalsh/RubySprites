@@ -5,7 +5,7 @@ $:.unshift File.join($test_dir, '../lib')
 
 require 'test/unit'
 require 'test/unit/ui/console/testrunner'
-require 'ruby_sprites/sprite'
+require 'lash-sprites/sprite'
 require 'test/t_generic'
 
 unless RubySprites::Sprite.graphics_managers[:rmagick].nil?

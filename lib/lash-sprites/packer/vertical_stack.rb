@@ -1,4 +1,4 @@
-require 'ruby_sprites/image'
+require 'lash-sprites/image'
 
 
 module RubySprites

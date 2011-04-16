@@ -1,5 +1,5 @@
-require 'ruby_sprites/image'
-require 'ruby_sprites/block'
+require 'lash-sprites/image'
+require 'lash-sprites/block'
 
 module RubySprites
   module Packer

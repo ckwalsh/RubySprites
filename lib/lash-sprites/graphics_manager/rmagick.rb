@@ -1,4 +1,4 @@
-require 'ruby_sprites/graphics_manager/graphics_manager'
+require 'lash-sprites/graphics_manager/graphics_manager'
 
 module RubySprites
   module GraphicsManager

@@ -2,8 +2,8 @@ current_dir = File.dirname(__FILE__)
 
 $:.unshift File.join(current_dir, '../../lib')
 
-require 'ruby_sprites/sprite'
-require 'ruby_sprites/css'
+require 'lash-sprites/sprite'
+require 'lash-sprites/css'
 
 sprite = RubySprites::Sprite.new('css/sprite.png', current_dir + '/..')
     

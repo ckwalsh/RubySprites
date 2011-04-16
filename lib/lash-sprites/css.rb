@@ -1,4 +1,4 @@
-require 'ruby_sprites/sprite'
+require 'lash-sprites/sprite'
 
 module RubySprites
   class CSS

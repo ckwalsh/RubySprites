@@ -6,7 +6,7 @@ require 'rubygems'
 desc 'Determine server compatibility and test components'
 task :test do
   $:.unshift 'lib'
-  require 'ruby_sprites/sprite'
+  require 'lash-sprites/sprite'
 
   puts 'Availible Image Managers'
   RubySprites::Sprite.graphics_managers.values.each { |x|
@@ -14,7 +14,7 @@ task :test do
   }
 
   puts 'Availible packing algorithms'
-  Dir.entries('lib/ruby_sprites/packer').sort.each { |x|
+  Dir.entries('lib/lash-sprites/packer').sort.each { |x|
     next unless x.match(/\.rb$/)
     class_name = x.gsub('.rb', '').capitalize.gsub(/_([a-z]+)/) {|x| $1.capitalize}
     puts "\t#{class_name}"
