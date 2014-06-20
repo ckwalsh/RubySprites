@@ -4,7 +4,7 @@ test_dir = File.dirname(__FILE__)
 
 $:.unshift File.join(test_dir, '../lib')
 
-require 'ruby_sprites/sprite'
+require 'lash-sprites/sprite'
 require 'benchmark'
 
 n = 50
@@ -13,13 +13,13 @@ puts "#{n} Iterations"
 file_data = []
 
 Benchmark.bmbm(17) do |r|
-  Dir.entries(File.join(test_dir, '../lib/ruby_sprites/packer')).sort.each do |f|
+  Dir.entries(File.join(test_dir, '../lib/lash-sprites/packer')).sort.each do |f|
     next unless f.match(/\.rb$/)
     
     class_name = f.gsub('.rb', '').capitalize.gsub(/_([a-z]+)/) {|x| $1.capitalize}
     file_name = f.gsub('.rb', '')
     
-    require "ruby_sprites/packer/#{file_name}"
+    require "lash-sprites/packer/#{file_name}"
     
     sprite = RubySprites::Sprite.new("#{class_name}.png", test_dir, {:force_update => true, :pack_type => file_name})
     

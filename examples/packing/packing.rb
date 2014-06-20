@@ -2,7 +2,7 @@ current_dir = File.dirname(__FILE__)
 
 $:.unshift File.join(current_dir, '../../lib')
 
-require 'ruby_sprites/sprite'
+require 'lash-sprites/sprite'
 
 
 pack_types = [:vertical_stack, :horizontal_stack, :vertical_smart, :horizontal_smart, :both_smart, :even, :ratio, :both_split, :vertical_split, :horizontal_split]

@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-require 'ruby_sprites/sprite'
+require 'lash-sprites/sprite'
 
 module TestGeneric
  

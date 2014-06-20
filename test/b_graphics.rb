@@ -4,7 +4,7 @@ test_dir = File.dirname(__FILE__)
 
 $:.unshift File.join(test_dir, '../lib')
 
-require 'ruby_sprites/sprite'
+require 'lash-sprites/sprite'
 require 'benchmark'
 
 n = 10

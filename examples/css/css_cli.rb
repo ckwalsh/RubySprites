@@ -3,8 +3,8 @@
 current_dir = File.dirname(__FILE__)
 $:.unshift File.join(current_dir, '../../lib')
 
-require 'ruby_sprites/sprite'
-require 'ruby_sprites/css'
+require 'lash-sprites/sprite'
+require 'lash-sprites/css'
 
 if ARGV.length < 3
   puts "Usage: ruby css_cli.rb repeat-type sprite_image.ext img1.ext [img2.ext] [...]"
